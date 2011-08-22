@@ -1,0 +1,47 @@
+{
+    "name": "justtest",
+    "version": "0.0.1",
+    "main": "./lib/justtest.js",
+    "description": "Unit tests with JSDOM wrapper.",
+    "keywords": [
+        "unittest",
+        "dom",
+        "test"
+    ],
+    "author": {
+        "name": "Josh Marshall",
+        "email": "catchjosh@gmail.com",
+        "web": "http://openjosh.com"
+    },
+
+    "bugs": {
+        "mail": "catchjosh@gmail.com",
+        "web": "http://github.com/joshmarshall/justtest/issues"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url":
+            "http://github.com/joshmarshall/justtest/blob/master/LICENSE.txt"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "http://github.com/joshmarshall/justtest.git"
+        }
+    ],
+    "directories": {
+        "lib": "./lib"
+    },
+    "dependencies": {
+        "console.log": "*",
+        "colors": "*",
+        "jsdom": "0.2.x",
+        "request": "*"
+    },
+    "bin": {
+        "test.js": "./bin/test.js"
+    },
+    "engines": { "node": "0.5.x" }
+}

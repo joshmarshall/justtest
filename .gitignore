@@ -1,0 +1,5 @@
+.vagrant
+node_modules
+manifests/build
+*.swp
+*.swo
