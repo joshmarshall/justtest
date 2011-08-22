@@ -28,8 +28,9 @@ var argPaths = [];
 var args = process.argv;
 
 if (args.length < 3) {
-    // default test lookup directory is cwd
-    args.push("./");
+    // must pass in one or more paths
+    console.log("One or more paths required.");
+    process.exit(1);
 }
 
 // parse arguments for paths
