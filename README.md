@@ -18,6 +18,8 @@ project, you can install to your current directory with:
 
     npm install -g path/to/justtest
 
+That's really only going to work for the test.js executable though.
+
 Usage
 -----
 Creating the simplest possible test file should look like:
@@ -152,6 +154,19 @@ The following is a list of options that domTestCase uses.
 
 Additionally, justtest.defaultGlobals allows overriding of what's included
 on every test by default.
+
+Useful stuff on the test object:
+
+* test.config.timeout: int - the number of milliseconds before a test fails
+  from a timeout.
+* test.error: function - pass to error handlers, for example RequreJS's
+  require.onError.
+* test.wrap: function - always wrap callbacks with this function
+* test.start: function - called by setUp to start the tests
+* test.done: function - called by tearDown to finish the tests
+* test.ok/test.equal/etc. function - standard assertion functions
+* test.globals: object - holds variables that should be accessible to
+  setUp, tearDown, and the test functions.
 
 Contact
 -------
