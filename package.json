@@ -36,12 +36,10 @@
     },
     "dependencies": {
         "console.log": "*",
-        "colors": "*",
         "jsdom": "0.2.x",
-        "request": "*"
-    },
-    "bin": {
-        "test.js": "./bin/test.js"
+        "request": "*",
+        "xmlhttprequest": "*",
+        "nodeunit": "*"
     },
     "engines": "node >= 0.5.x"
 }

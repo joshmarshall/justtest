@@ -50,16 +50,9 @@ class node053 {
             path => ["/bin", "/usr/bin", "/usr/local/bin"],
             require => Exec["get_npm"],
             creates => "/usr/local/bin/npm";
-        "install_jsdom":
-            command => "npm install jsdom",
+        "install_dependencies":
+            command => "npm install ./",
             cwd => "/vagrant",
-            creates => "/vagrant/node_modules/jsdom",
-            path => ["/bin", "/usr/bin", "/usr/local/bin"],
-            require => Exec["install_npm"];
-        "install_colors":
-            command => "npm install colors",
-            cwd => "/vagrant",
-            creates => "/vagrant/node_modules/colors",
             path => ["/bin", "/usr/bin", "/usr/local/bin"],
             require => Exec["install_npm"];
     }

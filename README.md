@@ -1,10 +1,10 @@
 JuStTest
-=======
+========
 This is YAJTL (Yet Another Javascript Testing Library.) It's designed to
 test client-side libraries without a browser, while still supporting
 async behavior when mocking that out is just too complicated.
 
-It leans quite heavily on existing tools like JSDom and NodeUnit.
+It's pretty much just a wrapper around existing tools like JSDom and NodeUnit.
 
 Installation
 ------------
@@ -14,19 +14,12 @@ project, you can install to your current directory with:
 
     npm install path/to/justtest
 
-...or, you can install globally with:
-
-    npm install -g path/to/justtest
-
-That's really only going to work for the test.js executable though.
-
 Usage
 -----
-Creating the simplest possible test file should look like:
+By default, it passes everything through to NodeUnit, so a basic test
+looks like:
 
     module.exports = {
-
-        name: "foobar",
 
         testSomething: function(test) {
             test.ok(true);
@@ -35,20 +28,14 @@ Creating the simplest possible test file should look like:
 
     };
 
-We expose the basic assert module syntax, so ok(), equal(),
-notEqual(),  etc. are all available on the test argument.
+...and you can call it with the nodeunit executable like:
 
-Firing up the test just requires passing it to the test.js file in
-./bin (or /usr/local/bin, etc. if you installed it locally):
+    nodeunit tests/test_basic.js
 
-    test.js my_simple_test.js
-
-The basic rules are:
-
-* Always call test.start() in setUp (if you provide one)
-* Always call test.finish() in tearDown (if you provide one)
-* ALWAYS call test.done() inside each test function.
-* ALWAYS wrap callbacks with test.wrap(callback).
+The binary may be in different places depending on how you installed
+it, so the path could be `./node_modules/.bin/nodeunit` , or it might
+be globally available as  `nodeunit`, or even something hideous like
+`./node_modules/justtest/node_modules/.bin/nodeunit`.
 
 Testing Browser-ish Javascript
 ------------------------------
@@ -67,7 +54,7 @@ external dependencies. A sample project structure might look like:
 
     var domTest = require("justtest").domTestCase;
 
-    module.exports = domTest("advanced", {
+    module.exports = domTest({
 
         html: "../base.htm",
         scripts: ["../jquery.js", "../myawesome.js",],
@@ -75,28 +62,31 @@ external dependencies. A sample project structure might look like:
         // setting the default window properties to load
         exportGlobals: ["jQuery"],
 
-        setUp: function(test) {
+        setUp: function(callback) {
             // optional: do some set up stuff here...
-            test.start();
+            this.globals.myAwesomeVar = true;
+            callback();
         },
 
         testjQuery: function(test) {
             // test.globals holds anything in exportGlobals
-            var title = test.globals.jQuery("h1").text()
+            test.equals(this.globals.myAwesomeVar, true);
+            var title = this.globals.jQuery("h1").text()
             test.equals(title, "LOL I HAZ A CAT");
             test.done();
+        },
 
         testMyLibrary: function(test) {
             // window is always attached to test.globals
             // (document is available with test.globals.window.document)
-            var result = test.globals.window.MyAwesomeObject.doIHazCat();
+            var result = this.globals.window.MyAwesomeObject.doIHazCat();
             test.ok(result);
             test.done();
         },
 
         testWithCallback: function(test) {
             // use test.wrap around any callbacks.
-            var $ = test.globals.jQuery;
+            var $ = this.globals.jQuery;
             $.get("http://www.google.com", test.wrap(function(data) {
                 // ...test response...
                 test.done();
@@ -114,36 +104,17 @@ The options that can be passed into domTestCase are listed below.
 
 Running Tests
 -------------
-JustTest comes with a simple test runner and reporter. If you
-installed it globally, it should be available as "test.js", otherwise
-it might be in the local node\_modules/.bin folder.
-
-Running it looks like:
-
-    test.js path/to/your_tests.js
-
-Or you can pass in directory, and it will hunt for Javascript files
-that begin with "test":
-
-    test.js path/to/tests/
-
-If you don't properly wrap your callbacks with test.wrap (or even
-if you do, depending on libraries, etc.) it can stall indefinitely.
-So always check your tests before letting an automated build run if
-you can.
+I've gotten rid of the custom test runner that used to be in this project
+and coupled it more with NodeUnit. Just refer to the NodeUnit project for
+the options that you can pass to it.
 
 domTestCase Options
 -------------------
-By default, a test case only expects one or more functions that start
-with "test". However, since we also support DOM tests, it will usually be
-important to import some sort of HTML base, as well as other Javascript
-libraries to test.
-
 The following is a list of options that domTestCase uses.
 
-* setUp: function(test) - Provides a custom setUp to be called after
+* setUp: function(callback) - Provides a custom setUp to be called after
   domTestCase has finished setting up.
-* tearDown: function(test) - Provides a custom tearDown function to be
+* tearDown: function(callback) - Provides a custom tearDown function to be
   called after domTest as finished running tests.
 * htmlPath: string - A path to the HTML content that will be loaded by JSDOM.
 * html: string - raw HTML to be used as the DOM base.
@@ -154,19 +125,6 @@ The following is a list of options that domTestCase uses.
 
 Additionally, justtest.defaultGlobals allows overriding of what's included
 on every test by default.
-
-Useful stuff on the test object:
-
-* test.config.timeout: int - the number of milliseconds before a test fails
-  from a timeout.
-* test.error: function - pass to error handlers, for example RequreJS's
-  require.onError.
-* test.wrap: function - always wrap callbacks with this function
-* test.start: function - called by setUp to start the tests
-* test.done: function - called by tearDown to finish the tests
-* test.ok/test.equal/etc. function - standard assertion functions
-* test.globals: object - holds variables that should be accessible to
-  setUp, tearDown, and the test functions.
 
 Contact
 -------
